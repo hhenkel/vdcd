@@ -35,6 +35,8 @@ jobs:
           # Extract branch name
           if [[ "${{ github.event_name }}" != "workflow_dispatch" ]]; then
             echo "BRANCH=${{ github.ref_name }}" >> $GITHUB_ENV
+          else
+            echo "BRANCH=${{ inputs.BRANCH }}" >> $GITHUB_ENV
           fi
       - uses: actions/checkout@v4
         with:
