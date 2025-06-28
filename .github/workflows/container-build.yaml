@@ -23,12 +23,11 @@ on:
           - testing
 
 jobs:
-  ubuntu_matrix:
+  build:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         os: [focal, jammy, noble]
-  build:
-    runs-on: ubuntu-latest
     steps:
       - name: Set branch
         id: set-vars
