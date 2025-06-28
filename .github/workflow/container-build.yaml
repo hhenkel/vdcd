@@ -1,0 +1,49 @@
+---
+name: Docker Image CI
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+  workflow_dispatch:
+    inputs:
+      BRANCH:
+        description: Branch to build
+        required: true
+        default: 'main'
+        type: choice
+        options:
+          - main
+          - luz
+          - production
+          - testing
+
+jobs:
+  ubuntu_matrix:
+    strategy:
+      matrix:
+        os: [focal, jammy, noble]
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set branch
+        id: set-vars
+        run: |
+          # Extract branch name
+          if [[ "${{ github.event_name }}" =! "workflow_dispatch" ]]; then
+            echo "BRANCH=${{ github.ref_name }}" >> $GITHUB_ENV
+          fi
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BRANCH }}
+      - name: Build the Docker image
+        run: |
+          docker build . \
+          --file Dockerfile \
+          --arg BRANCH=${{ env.BRANCH }} \
+          --arg IMAGE_TAG=${{ matrix.os }} \
+          --tag vdcd-${{ matrix.os }}:$(date +%s)
