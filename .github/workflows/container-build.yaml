@@ -33,7 +33,7 @@ jobs:
         id: set-vars
         run: |
           # Extract branch name
-          if [[ "${{ github.event_name }}" =! "workflow_dispatch" ]]; then
+          if [[ "${{ github.event_name }}" != "workflow_dispatch" ]]; then
             echo "BRANCH=${{ github.ref_name }}" >> $GITHUB_ENV
           fi
       - uses: actions/checkout@v4
